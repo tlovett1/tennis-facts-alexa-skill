@@ -1,0 +1,8 @@
+{
+  "name": "tennis-facts-alexa-skill",
+  "version": "1.0.0",
+  "description": "Ask Alexa for tennis facts.",
+  "dependencies": {
+    "alexa-sdk": "^1.0.0"
+  }
+}

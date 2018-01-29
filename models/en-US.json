@@ -1,0 +1,25 @@
+{
+  "interactionModel":{
+    "languageModel":{
+      "invocationName":"tennis facts",
+      "types":[],
+      "intents":[
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name":"NumberOfGrandSlams",
+          "slots":[
+
+          ],
+          "samples":[
+            "hello",
+            "say hello",
+            "say hello world"
+          ]
+        }
+      ]
+    }
+  }
+}
