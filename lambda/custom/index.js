@@ -1,55 +1,82 @@
 'use strict';
-var Alexa = require("alexa-sdk");
 
-// For detailed tutorial on how to making a Alexa skill,
-// please visit us at http://alexa.design/build
-
+const Alexa = require('alexa-sdk');
+const data = require('../../data/grandSlams.json');
 
 exports.handler = function(event, context) {
-    var alexa = Alexa.handler(event, context);
-    alexa.registerHandlers(handlers);
-    alexa.execute();
+  const alexa = Alexa.handler(event, context);
+  alexa.registerHandlers(startHandlers, questionHandlers);
+  alexa.execute();
 };
 
-var handlers = {
-    'LaunchRequest': function () {
-        this.emit('SayHello');
-    },
-    'HelloWorldIntent': function () {
-        this.emit('SayHello');
-    },
-    'MyNameIsIntent': function () {
-        this.emit('SayHelloName');
-    },
-    'SayHello': function () {
-        this.response.speak('Hello World!')
-                     .cardRenderer('hello world', 'hello world');
-        this.emit(':responseReady');
-    },
-    'SayHelloName': function () {
-        var name = this.event.request.intent.slots.name.value;
-        this.response.speak('Hello ' + name)
-            .cardRenderer('hello world', 'hello ' + name);
-        this.emit(':responseReady');
-    },
-    'SessionEndedRequest' : function() {
-        console.log('Session ended with reason: ' + this.event.request.reason);
-    },
-    'AMAZON.StopIntent' : function() {
-        this.response.speak('Bye');
-        this.emit(':responseReady');
-    },
-    'AMAZON.HelpIntent' : function() {
-        this.response.speak("You can try: 'alexa, hello world' or 'alexa, ask hello world my" +
-            " name is awesome Aaron'");
-        this.emit(':responseReady');
-    },
-    'AMAZON.CancelIntent' : function() {
-        this.response.speak('Bye');
-        this.emit(':responseReady');
-    },
-    'Unhandled' : function() {
-        this.response.speak("Sorry, I didn't get that. You can try: 'alexa, hello world'" +
-            " or 'alexa, ask hello world my name is awesome Aaron'");
-    }
+const states = {
+  QUESTIONMODE: '_QUESTIONMODE',
+  STARTMODE: '_STARTMODE'
 };
+
+const startHandlers = {
+  'LaunchRequest': function() {
+    this.response.speak("Welcome to Tennis Facts. What's your favorite tennis equipment brand?");
+    this.handler.state = states.STARTMODE;
+    this.emit(':responseReady');
+  },
+
+  'BrandIntent': function() {
+    this.handler.state = states.QUESTIONMODE;
+
+    this.attributes.brand = this.event.request.intent.slots.brand.value;
+
+    this.response.speak(this.attributes.brand + ' is a great brand!');
+    this.emit(':responseReady');
+  },
+
+  'AMAZON.StopIntent': function() {
+    this.response.speak('Bye');
+    this.emit(':responseReady');
+  },
+
+  'AMAZON.CancelIntent': function() {
+    this.response.speak('Bye');
+    this.emit(':responseReady');
+  },
+
+  'Unhandled': function() {
+    this.response.speak("Sorry, I didn't get that.");
+    this.emit(':responseReady');
+  },
+
+  'SessionEndedRequest': function() {
+    console.log('Session ended with reason: ' + this.event.request.reason);
+  }
+};
+
+const questionHandlers = Alexa.CreateStateHandler(states.QUESTIONMODE, {
+  'NumberOfGrandSlamsIntent': function() {
+    this.response.speak(this.event.request.intent.slots.player.value + ' has won ' + data[this.event.request.intent.slots.player.value].totalWins + ' grand slams.');
+    this.emit(':responseReady');
+  },
+
+  'AMAZON.HelpIntent': function() {
+    this.response.speak('Try asking how many grand slams Roger Federer has won.');
+    this.emit(':responseReady');
+  },
+
+  'AMAZON.StopIntent': function() {
+    this.response.speak('Enjoy your favorite brand ' + this.attributes.brand);
+
+    this.response.speak('Bye');
+    this.emit(':responseReady');
+  },
+
+  'AMAZON.CancelIntent': function() {
+    this.response.speak('Enjoy your favorite brand ' + this.attributes.brand);
+
+    this.response.speak('Bye');
+    this.emit(':responseReady');
+  },
+
+  'Unhandled': function() {
+    this.response.speak("Sorry, I didn't get that.");
+    this.emit(':responseReady');
+  }
+});

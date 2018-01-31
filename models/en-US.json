@@ -2,21 +2,76 @@
   "interactionModel":{
     "languageModel":{
       "invocationName":"tennis facts",
-      "types":[],
+      "types":[
+        {
+          "name": "PLAYER_NAME",
+          "values": [
+            {
+              "name": {
+                "value": "Roger Federer"
+              }
+            },
+            {
+              "name": {
+                "value": "Serena Williams"
+              }
+            }
+          ]
+        },
+        {
+          "name": "BRAND",
+          "values": [
+            {
+              "name": {
+                "value": "Head"
+              }
+            },
+            {
+              "name": {
+                "value": "Wilson"
+              }
+            },
+            {
+              "name": {
+                "value": "Babolat"
+              }
+            }
+          ]
+        }
+      ],
       "intents":[
         {
           "name": "AMAZON.StopIntent",
           "samples": []
         },
         {
-          "name":"NumberOfGrandSlams",
+          "name":"NumberOfGrandSlamsIntent",
           "slots":[
-
+            {
+              "name":"player",
+              "type":"PLAYER_NAME"
+            }
           ],
           "samples":[
-            "hello",
-            "say hello",
-            "say hello world"
+            "how many grand slams has {player} won",
+            "how many grand slams did {player} win",
+            "number of grand slams won by {player}",
+            "total grand slams won by {player}",
+            "grand slams {player}"
+          ]
+        },
+        {
+          "name":"BrandIntent",
+          "slots":[
+            {
+              "name":"brand",
+              "type":"BRAND"
+            }
+          ],
+          "samples":[
+            "{brand}",
+            "my favorite brand is {brand}",
+            "it's {brand}"
           ]
         }
       ]
